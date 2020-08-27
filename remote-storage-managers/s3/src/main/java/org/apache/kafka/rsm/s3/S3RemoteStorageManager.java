@@ -76,15 +76,20 @@ public class S3RemoteStorageManager implements RemoteStorageManager {
 
         AmazonS3ClientBuilder s3ClientBuilder = AmazonS3ClientBuilder.standard();
         if (this.endpointConfiguration == null) {
-            s3ClientBuilder = s3ClientBuilder.withRegion(config.s3Region());
+            this.endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(config.s3EndPoint(), config.s3Region() );
+            s3ClientBuilder = s3ClientBuilder.withEndpointConfiguration(endpointConfiguration);
+            s3ClientBuilder.enablePathStyleAccess();
+            //s3ClientBuilder = s3ClientBuilder.withRegion(config.s3Region());
         } else {
             s3ClientBuilder = s3ClientBuilder.withEndpointConfiguration(endpointConfiguration);
         }
+
 
         // It's fine to pass null in here.
         s3ClientBuilder.setCredentials(config.awsCredentialsProvider());
 
         s3Client = s3ClientBuilder.build();
+
         transferManager = TransferManagerBuilder.standard().withS3Client(s3Client).build();
     }
 

@@ -28,6 +28,7 @@
     <allow pkg="kafka.log"/>
     <allow pkg="kafka.utils"/>
     <allow pkg="org.apache.hadoop" />
+    <allow pkg="com.amazonaws" />
     <allow pkg="org.junit"/>
     <allow pkg="org.mockito"/>
 

@@ -26,18 +26,24 @@ import org.apache.kafka.common.config.ConfigException;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.regions.Regions;
 
+import static kafka.log.remote.RemoteLogManager.REMOTE_STORAGE_MANAGER_CONFIG_PREFIX;
+
 /**
  * A configuration for {@link S3RemoteStorageManager}.
  */
 public class S3RemoteStorageManagerConfig extends AbstractConfig {
-    public static final String S3_BUCKET_NAME_CONFIG = "s3.bucket.name";
+
+    public static final String S3_ENDPOINT_CONFIG = REMOTE_STORAGE_MANAGER_CONFIG_PREFIX() + "s3.endpoint";
+    private static final String S3_ENDPOINT_DOC = "The S3 endpoint.";
+
+    public static final String S3_BUCKET_NAME_CONFIG = REMOTE_STORAGE_MANAGER_CONFIG_PREFIX() + "s3.bucket.name";
     private static final String S3_BUCKET_NAME_DOC = "The S3 Bucket.";
 
-    public static final String S3_REGION_CONFIG = "s3.region";
+    public static final String S3_REGION_CONFIG = REMOTE_STORAGE_MANAGER_CONFIG_PREFIX() + "s3.region";
     private static final String S3_REGION_DEFAULT = Regions.DEFAULT_REGION.getName();
     private static final String S3_REGION_DOC = "The AWS region.";
 
-    public static final String S3_CREDENTIALS_PROVIDER_CLASS_CONFIG = "s3.credentials.provider.class";
+    public static final String S3_CREDENTIALS_PROVIDER_CLASS_CONFIG = REMOTE_STORAGE_MANAGER_CONFIG_PREFIX() + "s3.credentials.provider.class";
     private static final Class<? extends AWSCredentialsProvider> S3_CREDENTIALS_PROVIDER_CLASS_DEFAULT = null;
     private static final String S3_CREDENTIALS_PROVIDER_CLASS_DOC = "The credentials provider to use for " +
         "authentication to AWS. If not set, AWS SDK uses the default " +
@@ -46,6 +52,15 @@ public class S3RemoteStorageManagerConfig extends AbstractConfig {
     private static final ConfigDef CONFIG;
     static {
         CONFIG = new ConfigDef();
+
+        CONFIG.define(
+            S3_ENDPOINT_CONFIG,
+            ConfigDef.Type.STRING,
+            ConfigDef.NO_DEFAULT_VALUE,
+            new ConfigDef.NonEmptyString(),
+            ConfigDef.Importance.HIGH,
+            S3_ENDPOINT_DOC
+        );
 
         CONFIG.define(
             S3_BUCKET_NAME_CONFIG,
@@ -87,13 +102,21 @@ public class S3RemoteStorageManagerConfig extends AbstractConfig {
         return getString(S3_BUCKET_NAME_CONFIG);
     }
 
-    public Regions s3Region() {
+    public String s3EndPoint() {
+        return getString(S3_ENDPOINT_CONFIG);
+    }
+
+    public String s3Region() {
+        return getString(S3_REGION_CONFIG);
+    }
+
+    /*public Regions s3Region() {
         final String regionStr = getString(S3_REGION_CONFIG);
         if (regionStr == null) {
             return null;
         }
         return Regions.fromName(regionStr);
-    }
+    }*/
 
     public AWSCredentialsProvider awsCredentialsProvider() {
         try {

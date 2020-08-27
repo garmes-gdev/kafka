@@ -1999,7 +1999,7 @@ project(':remote-storage-managers:s3') {
   }
 
   dependencies {
-    compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.726'
+    localDeps group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.726'
     compile configurations.localDeps
     compile project(':core')
 
